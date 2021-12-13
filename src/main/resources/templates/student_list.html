@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Список студентов</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <h1>Список студентов</h1>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td>id</td>
+            <td>Имя</td>
+            <td>Средний балл</td>
+            <td></td>
+            <td></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="studnet : ${studends}">
+            <td th:text="${studnet.id}">1</td>
+            <td th:text="${studnet.name}">Иван</td>
+            <td th:text="${studnet.score}">95</td>
+            <td><a th:href="@{${'/info/' + studnet.id}}">Подробнее</a></td>
+            <td><form method="post" th:action="@{${'/delete/' + studnet.id}}">
+                <button type="submit" class="btn btn-danger">x</button>
+            </form></td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{'/add'}" class="btn btn-primary">Добавить</a>
+</div>
+</body>
+</html>
