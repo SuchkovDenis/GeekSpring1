@@ -9,7 +9,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import static ru.gb.springbootdemoapp.converter.StudentConverter.studentShortDtoToStudent;
+import static ru.gb.springbootdemoapp.converter.StudentConverter.studentToStudentDto;
+import static ru.gb.springbootdemoapp.converter.StudentConverter.studentToStudentShortDto;
 import ru.gb.springbootdemoapp.dto.StudentDto;
+import ru.gb.springbootdemoapp.converter.StudentConverter;
+import ru.gb.springbootdemoapp.dto.StudentShortDto;
 import ru.gb.springbootdemoapp.model.Student;
 import ru.gb.springbootdemoapp.service.StudentService;
 
@@ -26,19 +31,20 @@ public class StudentRestController {
   // http://localhost:8080/app/rest/all GET
   @GetMapping("/all")
   public List<StudentDto> getAllStudents(@RequestParam(defaultValue = "0") Float score) {
-    return studentService.getWithScore(score).stream().map(StudentDto::new).collect(Collectors.toList());
+    return studentService.getWithScore(score).stream().map(StudentConverter::studentToStudentDto).collect(Collectors.toList());
   }
 
   // http://localhost:8080/app/rest/info/3 GET
   @GetMapping("/info/{id}")
   public StudentDto getStudentInfo(@PathVariable Long id) {
-    return new StudentDto(studentService.findById(id));
+    return studentToStudentDto(studentService.findById(id));
   }
 
   // http://localhost:8080/app/rest/add POST
   @PostMapping("/add")
-  public Student saveStudent(@RequestBody Student student) {
+  public StudentShortDto saveStudent(@RequestBody StudentShortDto studentShortDto) {
+    Student student = studentShortDtoToStudent(studentShortDto);
     studentService.save(student);
-    return student;
+    return studentToStudentShortDto(student);
   }
 }
