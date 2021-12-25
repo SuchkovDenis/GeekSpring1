@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class MethodArgumentNotValidExceptionResolver {
+public class ValidationExceptionResolver {
 
   @ExceptionHandler
   public ResponseEntity<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
@@ -23,5 +23,10 @@ public class MethodArgumentNotValidExceptionResolver {
         }
     );
     return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler
+  public ResponseEntity<Map<String, String>> handleNotFoundFacultyException(FacultyNotFound ex) {
+    return new ResponseEntity<>(Map.of("message", "Факультет не найден"), HttpStatus.BAD_REQUEST);
   }
 }

@@ -10,27 +10,27 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.gb.springbootdemoapp.converter.StudentMapper;
 import ru.gb.springbootdemoapp.dto.StudentDto;
 import ru.gb.springbootdemoapp.dto.StudentShortDto;
-import ru.gb.springbootdemoapp.converter.StudentConverter;
-import static ru.gb.springbootdemoapp.converter.StudentConverter.studentShortDtoToStudent;
-import static ru.gb.springbootdemoapp.converter.StudentConverter.studentToStudentDto;
 import ru.gb.springbootdemoapp.service.StudentService;
 
 @Controller
 public class StudentController {
 
   private final StudentService studentService;
+  private final StudentMapper studentMapper;
 
-  public StudentController(StudentService studentService) {
+  public StudentController(StudentService studentService, StudentMapper studentMapper) {
     this.studentService = studentService;
+    this.studentMapper = studentMapper;
   }
 
   // http://localhost:8080/app/ GET
   @GetMapping("/")
   public String getAllStudents(Model model, @RequestParam(defaultValue = "0") Float score) {
     List<StudentDto> students =  studentService.getWithScore(score).stream()
-        .map(StudentConverter::studentToStudentDto).collect(Collectors.toList());
+        .map(studentMapper::studentToStudentDto).collect(Collectors.toList());
     model.addAttribute("studends", students);
     return "student_list";
   }
@@ -38,7 +38,7 @@ public class StudentController {
   // http://localhost:8080/app/info/3 GET
   @GetMapping("/info/{id}")
   public String getStudentInfo(@PathVariable Long id, Model model) {
-    model.addAttribute("student", studentToStudentDto(studentService.findById(id)));
+    model.addAttribute("student", studentMapper.studentToStudentDto(studentService.findById(id)));
     return "student_info";
   }
 
@@ -59,7 +59,7 @@ public class StudentController {
     if (bindingResult.hasErrors()) {
       return "student_form";
     }
-    studentService.save(studentShortDtoToStudent(studentShortDto));
+    studentService.save(studentMapper.studentShortDtoToStudent(studentShortDto));
     return "redirect:/";
   }
 

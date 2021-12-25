@@ -18,4 +18,6 @@ public class StudentShortDto {
   @Min(value = 0, message = "{validation.Min.message}")
   @Max(value = 100, message = "{validation.Max.message}")
   private Float score;
+
+  private String facultyName;
 }
