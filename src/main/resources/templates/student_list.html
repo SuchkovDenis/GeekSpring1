@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Список студентов</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -8,6 +9,9 @@
 <body>
 <div class="container">
     <h1 th:text="#{title.student.list}">Список студентов</h1>
+    <div  sec:authorize="isAuthenticated()">
+        <h4 th:text="'Вы вошли как ' +${#authentication.getName()}"></h4>
+    </div>
     <table class="table table-striped">
         <thead>
         <tr>
@@ -23,14 +27,17 @@
             <td th:text="${studnet.id}">1</td>
             <td th:text="${studnet.name}">Иван</td>
             <td th:text="${studnet.score}">95</td>
-            <td><a th:href="@{${'/info/' + studnet.id}}">Подробнее</a></td>
-            <td><form method="post" th:action="@{${'/delete/' + studnet.id}}">
+            <td><a sec:authorize="hasAnyRole('ADMIN', 'USER')" th:href="@{${'/info/' + studnet.id}}">Подробнее</a></td>
+            <td><form sec:authorize="hasRole('ADMIN')" method="post" th:action="@{${'/delete/' + studnet.id}}">
                 <button type="submit" class="btn btn-danger">x</button>
             </form></td>
         </tr>
         </tbody>
     </table>
     <a th:href="@{'/add'}" class="btn btn-primary">Добавить</a>
+    <form sec:authorize="isAuthenticated()" method="post" th:action="@{'/logout'}">
+        <button type="submit" class="btn btn-warning">Выйти</button>
+    </form>
 </div>
 </body>
 </html>

@@ -3,6 +3,7 @@ package ru.gb.springbootdemoapp.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -44,6 +45,7 @@ public class StudentController {
 
   // http://localhost:8080/app/add GET
   @GetMapping("/add")
+  @Secured({"ROLE_ADMIN"})
   public String getStudentAddFrom(Model model) {
     StudentShortDto studentShortDto = new StudentShortDto();
     studentShortDto.setName("Имя студента");
